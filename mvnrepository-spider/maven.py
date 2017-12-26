@@ -3,8 +3,12 @@
 
 import json
 
-import requests
 from bs4 import BeautifulSoup
+from requests import Session
+from requests.adapters import HTTPAdapter
+
+session = Session()
+session.mount('http://', HTTPAdapter(max_retries=3))
 
 
 class Dependency:
@@ -104,7 +108,7 @@ class Artifact:
         self.__init(location)
 
     def __init(self, location):
-        r = requests.get(self.__url.format(location[0], location[1], location[2]))
+        r = session.get(self.__url.format(location[0], location[1], location[2]))
         dom = BeautifulSoup(r.text, 'html5lib')
         version_sections = dom.select('div.version-section')
         self.__analyse_version_sections(version_sections)
