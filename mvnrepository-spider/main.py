@@ -95,7 +95,7 @@ def fill_db(location, artifact):
                         )
         conn.commit()
     except:
-        #conn.rollback()
+        conn.rollback()
         raise
     finally:
         pg_pool.putconn(conn)
@@ -110,7 +110,7 @@ def start():
         artifact = Artifact(location[1:])
         try:
             fill_db(location, artifact)
-        except Exception as e:
+        except BaseException as e:
             logger.error("%s\n%s\n\n", location, e, exc_info=1)
             break
 
