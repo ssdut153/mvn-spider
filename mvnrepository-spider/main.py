@@ -95,7 +95,7 @@ def fill_db(location, artifact):
                         )
         conn.commit()
     except:
-        conn.rollback()
+        #conn.rollback()
         raise
     finally:
         pg_pool.putconn(conn)
