@@ -107,8 +107,8 @@ def start():
         location = read_db(get_next())
         if location is None:
             break
-        artifact = Artifact(location[1:])
         try:
+            artifact = Artifact(location[1:])
             fill_db(location, artifact)
         except BaseException as e:
             logger.error("%s\n%s\n\n", location, e, exc_info=1)
