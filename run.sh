@@ -9,7 +9,7 @@ then
 			cp -R "mvnrepository-spider" "$dir";
 		fi
 		cd "$dir";
-		nohub python3 main.py &
+		nohup python3 main.py &
 		cd ../;
 		let "i++";
 	done
