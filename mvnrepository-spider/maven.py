@@ -8,7 +8,16 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 
 session = Session()
-session.mount('http://', HTTPAdapter(max_retries=3))
+session.mount('https://', HTTPAdapter(max_retries=3))
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                  ' Chrome/33.0.1750.146 Safari/537.36',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Encoding': 'utf-8',
+    'Accept-Language': 'zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3',
+    'Connection': 'keep-alive'
+}
 
 
 class Dependency:
@@ -91,7 +100,7 @@ class Developer:
 
 
 class Artifact:
-    __url = 'http://mvnrepository.com/artifact/{0}/{1}/{2}'
+    __url = 'https://mvnrepository.com/artifact/{0}/{1}/{2}'
 
     def __init__(self, location):
         self.__group_id = location[0]
@@ -108,7 +117,7 @@ class Artifact:
         self.__init(location)
 
     def __init(self, location):
-        r = session.get(self.__url.format(location[0], location[1], location[2]))
+        r = session.get(self.__url.format(location[0], location[1], location[2]), headers=headers)
         dom = BeautifulSoup(r.text, 'html5lib')
         version_sections = dom.select('div.version-section')
         self.__analyse_version_sections(version_sections)
