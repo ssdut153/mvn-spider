@@ -42,14 +42,16 @@ pg_pool = SimpleConnectionPool(
 
 def get_next():
     r = Redis(connection_pool=redis_pool)
-    return r.incr('current_index')
+    return r.incr('current_index2')
 
 
 def read_db(index):
     conn = pg_pool.getconn()
     try:
         with conn.cursor() as cur:
-            cur.execute('SELECT id, group_id, artifact_id, version FROM m2_index WHERE id = %s', (index,))
+            cur.execute('SELECT m2_index.id, group_id, artifact_id, version '
+                        'FROM m2_index JOIN m2_index2 ON m2_index.id = m2_index2.id '
+                        'WHERE m2_index2.no = %s', (index,))
             data = cur.fetchone()
             conn.commit()
             return data
