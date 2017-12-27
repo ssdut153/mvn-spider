@@ -42,7 +42,7 @@ pg_pool = SimpleConnectionPool(
 
 def get_next():
     r = Redis(connection_pool=redis_pool)
-    return r.incr('current_index2')
+    return r.incr('licenses')
 
 
 def read_db(index):
@@ -108,6 +108,22 @@ def fill_db(location, artifact):
         pg_pool.putconn(conn)
 
 
+def set_licenses(index, artifact):
+    conn = pg_pool.getconn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                'UPDATE m2_package SET license = %s, success = %s WHERE index_id = %s',
+                (','.join(artifact.licenses), True, index)
+            )
+            conn.commit()
+    except:
+        conn.rollback()
+        raise
+    finally:
+        pg_pool.putconn(conn)
+
+
 def start():
     global stop
     while not stop:
@@ -116,7 +132,7 @@ def start():
             break
         try:
             artifact = Artifact(location[1:])
-            fill_db(location, artifact)
+            set_licenses(location[0], artifact)
         except BaseException as e:
             logger.error("%s\n%s\n\n", location, e, exc_info=1)
             break

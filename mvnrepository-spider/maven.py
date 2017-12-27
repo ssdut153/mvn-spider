@@ -4,6 +4,7 @@
 import json
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from requests import Session
 from requests.adapters import HTTPAdapter
 
@@ -110,7 +111,7 @@ class Artifact:
         self.__developers = []
         self.__name = None
         self.__description = None
-        self.__license = None
+        self.__licenses = []
         self.__organization = None
         self.__home_page = None
         self.__date = None
@@ -143,7 +144,9 @@ class Artifact:
             elif key == 'Date':
                 self.__date = value
             elif key == 'License':
-                self.__license = value
+                for lic in value:
+                    if isinstance(lic, Tag):
+                        self.__licenses.append(lic.text)
 
     def __analyse_version_sections(self, version_sections):
         for v in version_sections:
@@ -212,8 +215,8 @@ class Artifact:
         return self.__description
 
     @property
-    def license(self):
-        return self.__license
+    def licenses(self):
+        return self.__licenses
 
     @property
     def organization(self):
@@ -271,7 +274,7 @@ class Artifact:
             'organization': self.organization,
             'home_page': self.home_page,
             'date': self.date,
-            'license': self.license,
+            'licenses': self.licenses,
             'developers': dev,
             'dependencies': dep
         })
