@@ -50,7 +50,12 @@ def read_db(index):
     try:
         with conn.cursor() as cur:
             cur.execute('SELECT id, group_id, artifact_id, version FROM m2_index WHERE id = %s', (index,))
-            return cur.fetchone()
+            data = cur.fetchone()
+            conn.commit()
+            return data
+    except:
+        conn.rollback()
+        raise
     finally:
         pg_pool.putconn(conn)
 
