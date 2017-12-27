@@ -112,7 +112,7 @@ def start():
             fill_db(location, artifact)
         except BaseException as e:
             logger.error("%s\n%s\n\n", location, e, exc_info=1)
-			break
+            break
 
 
 start()
