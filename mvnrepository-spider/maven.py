@@ -144,9 +144,8 @@ class Artifact:
             elif key == 'Date':
                 self.__date = value
             elif key == 'License':
-                for lic in value:
-                    if isinstance(lic, Tag):
-                        self.__licenses.append(lic.text)
+                for lic in tr.td:
+                        self.__licenses.append(lic.text.strip())
 
     def __analyse_version_sections(self, version_sections):
         for v in version_sections:
